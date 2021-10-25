@@ -1,4 +1,4 @@
-﻿@model Infrastructure.Data.Entities.Patient
+﻿@model Core.Dtos.PatientsDto
 
 @{
     ViewData["Title"] = "Edit";
@@ -9,32 +9,16 @@
 <h4>Patient</h4>
 <hr />
 <div class="row">
+    <div class="col-md-4"></div>
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Document" class="control-label"></label>
-                <input asp-for="Document" class="form-control" />
-                <span asp-validation-for="Document" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Adresss" class="control-label"></label>
-                <input asp-for="Adresss" class="form-control" />
-                <span asp-validation-for="Adresss" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <partial name="_Patient" />
+
+            <div class="form-group text-center">
+                <input type="submit" value="Save" class="btn btn-primary btn-lg" />
             </div>
         </form>
     </div>

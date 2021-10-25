@@ -2,50 +2,48 @@
 using MediatR;
 using Core.Dtos;
 using Core.Enums;
-using System.Linq;
 using Core.Exceptions;
-using Infrastructure.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Infrastructure.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+using Core.Services.Patients.Read;
+using Core.Services.Patients.List;
 using Core.Services.Patients.Create;
+using Core.Services.Patients.Update;
+using Core.Services.Patients.Delete;
 
 namespace Web.Controllers
 {
     public class PatientsController : Controller
     {
-        private readonly DataContext _context;
-
         private readonly IMediator _mediator;
 
-        public PatientsController(DataContext context, IMediator mediator)
+        public PatientsController(IMediator mediator)
         {
-            _context = context;
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<ActionResult> Index()
         {
-            return View(await _context.Patients.ToListAsync());
+            return View(await _mediator.Send(new ListPatientsQuery()));
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-                return NotFound();
-
-            Patient patient = await _context.Patients
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (patient == null)
+            try
             {
-                return NotFound();
+                return View(await _mediator.Send(new ReadPatientQuery { Id = id }));
             }
+            catch (ExceptionHandler e)
+            {
+                TempData["Title"] = e.Error.Title;
+                TempData["Message"] = e.Error.Message;
+                TempData["State"] = State.error.ToString();
 
-            return View(patient);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        public IActionResult Create()
+        public ActionResult Create()
         {
             return View();
         }
@@ -58,7 +56,7 @@ namespace Web.Controllers
             {
                 await _mediator.Send(new CreatePatientCommand { Patient = patientsDto });
                 TempData["Title"] = "Created";
-                TempData["Message"] = $"The task {patientsDto.FullName} was created";
+                TempData["Message"] = $"The patient {patientsDto.FullName} was created";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));
@@ -73,83 +71,54 @@ namespace Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<ActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            Patient patient = await _context.Patients.FindAsync(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-            return View(patient);
+            return View(await _mediator.Send(new ReadPatientQuery { Id = id }));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,FullName,Document,Adresss,Phone")] Patient patient)
+        public async Task<ActionResult> Edit(Guid id, PatientsDto patientsDto)
         {
-            if (id != patient.Id)
+            patientsDto.Id = id;
+            try
             {
-                return NotFound();
-            }
+                await _mediator.Send(new UpdatePatientCommad { PatientsDto = patientsDto });
+                TempData["Title"] = "Updated";
+                TempData["Message"] = $"The patient {patientsDto.FullName} was updated";
+                TempData["State"] = State.success.ToString();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(patient);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PatientExists(patient.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
-            return View(patient);
-        }
-
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
+            catch (ExceptionHandler e)
             {
-                return NotFound();
-            }
+                TempData["Title"] = e.Error.Title;
+                TempData["Message"] = e.Error.Message;
+                TempData["State"] = State.error.ToString();
 
-            Patient patient = await _context.Patients
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (patient == null)
+                return View(patientsDto);
+            }
+        }
+
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            try
             {
-                return NotFound();
+                await _mediator.Send(new DeletePatientCommand { Id = id });
+                TempData["Title"] = "Deleted";
+                TempData["Message"] = "The patient was deleted";
+                TempData["State"] = State.success.ToString();
+
+                return RedirectToAction(nameof(Index));
             }
+            catch (ExceptionHandler e)
+            {
+                TempData["Title"] = e.Error.Title;
+                TempData["Message"] = e.Error.Message;
+                TempData["State"] = State.error.ToString();
 
-            return View(patient);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            Patient patient = await _context.Patients.FindAsync(id);
-            _context.Patients.Remove(patient);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool PatientExists(Guid id)
-        {
-            return _context.Patients.Any(e => e.Id == id);
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

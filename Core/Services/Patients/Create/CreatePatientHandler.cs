@@ -24,16 +24,16 @@ namespace Core.Services.Patients.Create
         public async Task<bool> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             Patient patient = _mapper.Map<Patient>(request.Patient);
-             if(!await _patientsRepository.AddPatient(patient))
+            //returns true if the registration was made or false if it was not 
+            return await _patientsRepository.AddPatient(patient) ? true 
+                :
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
-                    new Error
-                    {
-                        Message = "Something has gone wrong",
-                        Title = "Error",
-                        State = State.error,
-                    });
-
-            return true;
+                   new Error
+                   {
+                       Message = "Something has gone wrong",
+                       Title = "Error",
+                       State = State.error,
+                   });
         }
     }
 }
