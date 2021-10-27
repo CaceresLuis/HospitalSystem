@@ -1,4 +1,5 @@
 using System;
+using MediatR;
 using Core.Exceptions;
 using Core.Validations;
 using Infrastructure.Data;
@@ -9,10 +10,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Core.Services.Patients.Create;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MediatR;
-using Core.Services.Patients.Create;
 
 namespace Web
 {
@@ -42,6 +42,8 @@ namespace Web
 
             services.AddControllersWithViews().AddFluentValidation(conf => conf.RegisterValidatorsFromAssemblyContaining<ConfigValidations>());
 
+            services.AddScoped<INurseRepository, NurseRepository>();
+            services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IPatientsRepository, PatientsRepository>();
         }
 

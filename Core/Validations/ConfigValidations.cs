@@ -23,4 +23,42 @@ namespace Core.Validations
                 .WithMessage("The Phone is requiered");
         }
     }
+    
+    public class NurseValidation : AbstractValidator<NurseDto>
+    {
+        public NurseValidation()
+        {
+            RuleFor(p => p.FullName)
+                .NotEmpty()
+                .WithMessage("The FullName is requiered");
+            RuleFor(p => p.Document)
+                .NotEmpty()
+                .WithMessage("The Document is requiered");
+            RuleFor(p => p.Adresss)
+                .NotEmpty()
+                .WithMessage("The Adresss is requiered");
+            RuleFor(p => p.Phone)
+                .NotEmpty()
+                .WithMessage("The Phone is requiered");
+        }
+    }
+    
+    public class DoctorValidation : AbstractValidator<DoctorDto>
+    {
+        public DoctorValidation()
+        {
+            RuleFor(p => p.FullName)
+                .NotEmpty()
+                .WithMessage("The FullName is requiered");
+            RuleFor(p => p.Document)
+                .NotEmpty()
+                .WithMessage("The Document is requiered");
+            RuleFor(p => p.Adresss)
+                .NotEmpty()
+                .WithMessage("The Adresss is requiered");
+            RuleFor(p => p.Phone)
+                .NotEmpty()
+                .WithMessage("The Phone is requiered");
+        }
+    }
 }

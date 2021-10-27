@@ -8,6 +8,8 @@ namespace Core.Mapping
     {
         public MapProfile()
         {
+            CreateMap<Nurse, NurseDto>().ReverseMap();
+            CreateMap<Doctor, DoctorDto>().ReverseMap();
             CreateMap<Patient, PatientsDto>().ReverseMap();
         }
     }

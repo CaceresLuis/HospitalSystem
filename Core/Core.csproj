@@ -6,6 +6,11 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+    <Folder Include="Services\Doctor\Create\" />
+    <Folder Include="Services\Doctor\Delete\" />
+    <Folder Include="Services\Doctor\List\" />
+    <Folder Include="Services\Doctor\Update\" />
+    <Folder Include="Services\Doctor\Read\" />
   </ItemGroup>
 
   <ItemGroup>
