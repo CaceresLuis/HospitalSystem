@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infrastructure.Data;
 using System.Threading.Tasks;
 using Infrastructure.Interfaces;
@@ -20,6 +21,13 @@ namespace Infrastructure.Repositories
         public async Task<Patient> GetPatient(Guid id)
         {
             return await _dataContext.Patients.FindAsync(id);
+        }
+        
+        public async Task<Patient> GetPatient(string name)
+        {
+            return await _dataContext.Patients
+                .Where(p => p.FullName == name)
+                .FirstOrDefaultAsync();
         }
         
         public async Task<List<Patient>> GetPatients()

@@ -43,8 +43,10 @@ namespace Web
             services.AddControllersWithViews().AddFluentValidation(conf => conf.RegisterValidatorsFromAssemblyContaining<ConfigValidations>());
 
             services.AddScoped<INurseRepository, NurseRepository>();
+            services.AddScoped<IQuoteRepository, QuoteRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IPatientsRepository, PatientsRepository>();
+            services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

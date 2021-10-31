@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Core.Dtos;
 using System.Net;
 using Core.Enums;
 using Core.Exceptions;
@@ -20,7 +21,7 @@ namespace Core.Services.Nurses.Update
 
         public async Task<bool> Handle(UpdateNuseCommand request, CancellationToken cancellationToken)
         {
-            Dtos.NurseDto data = request.NurseDto;
+            NurseDto data = request.NurseDto;
             Nurse nurse = await _nurseRepository.GetNurse(data.Id) ??
                 throw new ExceptionHandler(HttpStatusCode.NotFound,
                     new Error

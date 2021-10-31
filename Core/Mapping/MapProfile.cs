@@ -9,8 +9,10 @@ namespace Core.Mapping
         public MapProfile()
         {
             CreateMap<Nurse, NurseDto>().ReverseMap();
+            CreateMap<Quote, QuoteDto>().ReverseMap();
             CreateMap<Doctor, DoctorDto>().ReverseMap();
             CreateMap<Patient, PatientsDto>().ReverseMap();
+            CreateMap<MedicalHistory, MedicalHistoryDto>().ReverseMap();
         }
     }
 }

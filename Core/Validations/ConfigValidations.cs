@@ -61,4 +61,20 @@ namespace Core.Validations
                 .WithMessage("The Phone is requiered");
         }
     }
+    
+    public class QuoteValidation : AbstractValidator<QuoteDto>
+    {
+        public QuoteValidation()
+        {
+            RuleFor(p => p.Doctor)
+                .NotNull()
+                .WithMessage("The doctor is requiered");
+            RuleFor(p => p.Nurse)
+                .NotEmpty()
+                .WithMessage("The nurse is requiered");
+            RuleFor(p => p.MedicalHistory)
+                .NotEmpty()
+                .WithMessage("The medical history is requiered");
+        }
+    }
 }

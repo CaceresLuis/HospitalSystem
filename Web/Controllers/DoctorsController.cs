@@ -5,33 +5,33 @@ using Core.Enums;
 using Core.Exceptions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Core.Services.Patients.Read;
-using Core.Services.Patients.List;
-using Core.Services.Patients.Create;
-using Core.Services.Patients.Update;
-using Core.Services.Patients.Delete;
+using Core.Services.Doctors.List;
+using Core.Services.Doctors.Read;
+using Core.Services.Doctors.Create;
+using Core.Services.Doctors.Delete;
+using Core.Services.Doctors.Update;
 
 namespace Web.Controllers
 {
-    public class PatientsController : Controller
+    public class DoctorsController : Controller
     {
         private readonly IMediator _mediator;
 
-        public PatientsController(IMediator mediator)
+        public DoctorsController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         public async Task<ActionResult> Index()
         {
-            return View(await _mediator.Send(new ListPatientsQuery()));
+            return View(await _mediator.Send(new ListDoctorQuery()));
         }
 
-        public async Task<ActionResult> Details(Guid id, int atr)
+        public async Task<ActionResult> Details(Guid id)
         {
             try
             {
-                return View(await _mediator.Send(new ReadPatientHisotryQuery { Id = id }));
+                return View(await _mediator.Send(new ReadDoctorQuery { Id = id }));
             }
             catch (ExceptionHandler e)
             {
@@ -50,13 +50,13 @@ namespace Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(PatientsDto patientsDto)
+        public async Task<ActionResult> Create(DoctorDto doctorDto)
         {
             try
             {
-                await _mediator.Send(new CreatePatientCommand { Patient = patientsDto });
+                await _mediator.Send(new CreateDoctorCommand { DoctorDto = doctorDto });
                 TempData["Title"] = "Created";
-                TempData["Message"] = $"The patient {patientsDto.FullName} was created";
+                TempData["Message"] = $"The doctor {doctorDto.FullName} was created";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));
@@ -67,25 +67,25 @@ namespace Web.Controllers
                 TempData["Message"] = e.Error.Message;
                 TempData["State"] = State.error.ToString();
 
-                return View(patientsDto);
+                return View(doctorDto);
             }
         }
 
         public async Task<ActionResult> Edit(Guid id)
         {
-            return View(await _mediator.Send(new ReadPatientQuery { Id = id }));
+            return View(await _mediator.Send(new ReadDoctorQuery { Id = id }));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, PatientsDto patientsDto)
+        public async Task<ActionResult> Edit(Guid id, DoctorDto doctorDto)
         {
-            patientsDto.Id = id;
+            doctorDto.Id = id;
             try
             {
-                await _mediator.Send(new UpdatePatientCommad { PatientsDto = patientsDto });
+                await _mediator.Send(new UpdateDoctorCommad { DoctorDto = doctorDto });
                 TempData["Title"] = "Updated";
-                TempData["Message"] = $"The patient {patientsDto.FullName} was updated";
+                TempData["Message"] = $"The doctor {doctorDto.FullName} was updated";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));
@@ -96,7 +96,7 @@ namespace Web.Controllers
                 TempData["Message"] = e.Error.Message;
                 TempData["State"] = State.error.ToString();
 
-                return View(patientsDto);
+                return View(doctorDto);
             }
         }
 
@@ -104,9 +104,9 @@ namespace Web.Controllers
         {
             try
             {
-                await _mediator.Send(new DeletePatientCommand { Id = id });
+                await _mediator.Send(new DeleteDoctorCommand { Id = id });
                 TempData["Title"] = "Deleted";
-                TempData["Message"] = "The patient was deleted";
+                TempData["Message"] = "The doctor was deleted";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));

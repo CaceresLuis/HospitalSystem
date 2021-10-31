@@ -9,10 +9,10 @@ namespace Infrastructure.Data
         {
         }
 
-        public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<MedicalHistory> MedicalHistories { get; set; }
         public DbSet<Nurse> Nurses { get; set; }
-        public DbSet<Patient> Patients { get; set; }
         public DbSet<Quote> Quotes { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<MedicalHistory> MedicalHistories { get; set; }
     }
 }

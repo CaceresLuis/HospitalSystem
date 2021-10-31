@@ -10,6 +10,7 @@ namespace Infrastructure.Interfaces
         Task<bool> AddPatient(Patient patient);
         Task<bool> DeletePatient(Patient patient);
         Task<Patient> GetPatient(Guid id);
+        Task<Patient> GetPatient(string name);
         Task<List<Patient>> GetPatients();
         Task<bool> UpdatePatient(Patient patient);
     }

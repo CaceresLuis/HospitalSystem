@@ -56,7 +56,7 @@ namespace Web.Controllers
             {
                 await _mediator.Send(new CreateNurseCommand { NurseDto = nurseDto });
                 TempData["Title"] = "Created";
-                TempData["Message"] = $"The patient {nurseDto.FullName} was created";
+                TempData["Message"] = $"The nurse {nurseDto.FullName} was created";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));
@@ -85,7 +85,7 @@ namespace Web.Controllers
             {
                 await _mediator.Send(new UpdateNuseCommand { NurseDto = nurseDto });
                 TempData["Title"] = "Updated";
-                TempData["Message"] = $"The patient {nurseDto.FullName} was updated";
+                TempData["Message"] = $"The nurse {nurseDto.FullName} was updated";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));

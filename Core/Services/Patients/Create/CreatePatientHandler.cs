@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Interfaces;
 using Infrastructure.Data.Entities;
+using System;
 
 namespace Core.Services.Patients.Create
 {
@@ -14,19 +15,21 @@ namespace Core.Services.Patients.Create
     {
         private readonly IMapper _mapper;
         private readonly IPatientsRepository _patientsRepository;
+        private readonly IMedicalHistoryRepository _medicalHistoryRepository;
 
-        public CreatePatientHandler(IPatientsRepository patientsRepository, IMapper mapper)
+        public CreatePatientHandler(IPatientsRepository patientsRepository, IMapper mapper, IMedicalHistoryRepository medicalHistoryRepository)
         {
             _mapper = mapper;
             _patientsRepository = patientsRepository;
+            _medicalHistoryRepository = medicalHistoryRepository;
         }
 
         public async Task<bool> Handle(CreatePatientCommand request, CancellationToken cancellationToken)
         {
             Patient patient = _mapper.Map<Patient>(request.Patient);
             //returns true if the registration was made or false if it was not 
-            return await _patientsRepository.AddPatient(patient) ? true 
-                :
+            bool save = await _patientsRepository.AddPatient(patient); 
+            if(!save)
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
                    new Error
                    {
@@ -34,6 +37,12 @@ namespace Core.Services.Patients.Create
                        Title = "Error",
                        State = State.error,
                    });
+
+            var getP = await _patientsRepository.GetPatient(request.Patient.FullName);
+
+            MedicalHistory medicalHistory = new() { Patient = getP, DateTime = DateTime.Now };
+
+            return await _medicalHistoryRepository.AddMedicalHistory(medicalHistory);
         }
     }
 }
