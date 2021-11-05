@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Core.Dtos;
-using AutoMapper;
 using Core.Enums;
 using System.Net;
 using Core.Exceptions;
@@ -13,23 +12,23 @@ namespace Core.Services.Quotes.Create
 {
     public class CreateQuoteHandler : IRequestHandler<CreateQuoteCommand, bool>
     {
-        private readonly IMapper _mapper;
         private readonly IQuoteRepository _quoteRepository;
         private readonly INurseRepository _nurseRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IMedicalHistoryRepository _medicalHistoryRepository;
 
-        public CreateQuoteHandler(IMapper mapper, IQuoteRepository quoteRepository, INurseRepository nurseRepository, IDoctorRepository doctorRepository)
+        public CreateQuoteHandler(IQuoteRepository quoteRepository, INurseRepository nurseRepository, IDoctorRepository doctorRepository, IMedicalHistoryRepository medicalHistoryRepository)
         {
-            _mapper = mapper;
             _quoteRepository = quoteRepository;
             _nurseRepository = nurseRepository;
             _doctorRepository = doctorRepository;
+            _medicalHistoryRepository = medicalHistoryRepository;
         }
 
         public async Task<bool> Handle(CreateQuoteCommand request, CancellationToken cancellationToken)
         {
-            QuoteDto data = request.QuoteDto;
-            _ = await _nurseRepository.GetNurse(data.Nurse.Id) ??
+            CreateQuoteDto data = request.CreateQuoteDto;
+            Nurse nurse = await _nurseRepository.GetNurse(data.NurseId) ??
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
                    new Error
                    {
@@ -38,7 +37,7 @@ namespace Core.Services.Quotes.Create
                        State = State.error,
                    });
 
-            _ = await _doctorRepository.GetDoctor(data.Doctor.Id) ??
+            Doctor doctor = await _doctorRepository.GetDoctor(data.DoctorId) ??
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
                    new Error
                    {
@@ -47,7 +46,21 @@ namespace Core.Services.Quotes.Create
                        State = State.error,
                    });
 
-            Quote quote = _mapper.Map<Quote>(request.QuoteDto);
+            MedicalHistory medicalHistory = await _medicalHistoryRepository.GetMedicalHistory(data.MedicalHistory) ??
+                throw new ExceptionHandler(HttpStatusCode.BadRequest,
+                   new Error
+                   {
+                       Message = "Something has gone wrong",
+                       Title = "Error",
+                       State = State.error,
+                   });
+
+            Quote quote = new() 
+            {
+                Doctor = doctor, Nurse = nurse, DateTime = data.DateTime,
+                MedicalHistory = medicalHistory, Hour = data.Hour,
+                QuoteTotal = 1, Quotehour = 1
+            };
             return await _quoteRepository.AddQuote(quote) ? true
                 :
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,

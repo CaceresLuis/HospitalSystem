@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure.Data.Migratios
+namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211024021352_Initial")]
-    partial class Initial
+    [Migration("20211104183444_QuoteModify")]
+    partial class QuoteModify
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -147,11 +147,23 @@ namespace Infrastructure.Data.Migratios
                     b.Property<Guid?>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Hour")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("MedicalHistoryExpedient")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("NurseId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("QuoteTotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quotehour")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

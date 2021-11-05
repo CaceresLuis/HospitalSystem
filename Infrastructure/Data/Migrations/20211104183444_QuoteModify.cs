@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Infrastructure.Data.Migratios
+namespace Infrastructure.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class QuoteModify : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -86,10 +86,14 @@ namespace Infrastructure.Data.Migratios
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     NurseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Hour = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    MedicalHistoryExpedient = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    QuoteTotal = table.Column<int>(type: "int", nullable: false),
+                    Quotehour = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicalHistoryExpedient = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

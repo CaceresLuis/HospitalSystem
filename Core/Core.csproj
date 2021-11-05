@@ -10,9 +10,7 @@
     <Folder Include="Services\MedicalHitories\List\" />
     <Folder Include="Services\MedicalHitories\Update\" />
     <Folder Include="Services\Quotes\Delete\" />
-    <Folder Include="Services\Quotes\List\" />
     <Folder Include="Services\Quotes\Update\" />
-    <Folder Include="Services\Quotes\Read\" />
   </ItemGroup>
 
   <ItemGroup>

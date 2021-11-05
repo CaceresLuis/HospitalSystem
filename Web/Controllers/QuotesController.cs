@@ -5,7 +5,10 @@ using Core.Enums;
 using Core.Exceptions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Core.Services.Quotes.List;
+using Core.Services.Doctors.List;
 using Core.Services.Quotes.Create;
+using System.Collections.Generic;
 
 namespace Web.Controllers
 {
@@ -18,10 +21,11 @@ namespace Web.Controllers
             _mediator = mediator;
         }
 
-        //public async Task<ActionResult> Index()
-        //{
-        //    return View(await _mediator.Send(new ListDoctorQuery()));
-        //}
+        public async Task<ActionResult> Index()
+        {
+            List<QuoteDto> quotes = await _mediator.Send(new ListQuoteQuery());
+            return View(quotes);
+        }
 
         //public async Task<ActionResult> Details(Guid id)
         //{
@@ -39,20 +43,26 @@ namespace Web.Controllers
         //    }
         //}
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create(Guid id)
         {
-            return View();
+            System.Collections.Generic.List<DoctorDto> doctors = await _mediator.Send(new ListDoctorQuery());
+            CreateQuoteDto createQuoteDto = new()
+            {
+                MedicalHistory = id,
+                Doctors = doctors
+            };
+            return View(createQuoteDto);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(QuoteDto quoteDto)
+        public async Task<ActionResult> Create(CreateQuoteDto createQuoteDto)
         {
             try
             {
-                await _mediator.Send(new CreateQuoteCommand { QuoteDto = quoteDto });
+                await _mediator.Send(new CreateQuoteCommand { CreateQuoteDto = createQuoteDto });
                 TempData["Title"] = "Created";
-                TempData["Message"] = $"appointment for {quoteDto.MedicalHistory.Expedient} was successfully booked";
+                TempData["Message"] = $"appointment for {createQuoteDto.MedicalHistory} was successfully booked";
                 TempData["State"] = State.success.ToString();
 
                 return RedirectToAction(nameof(Index));
@@ -63,7 +73,7 @@ namespace Web.Controllers
                 TempData["Message"] = e.Error.Message;
                 TempData["State"] = State.error.ToString();
 
-                return View(quoteDto);
+                return View(createQuoteDto);
             }
         }
 

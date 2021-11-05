@@ -10,6 +10,7 @@ namespace Infrastructure.Interfaces
         Task<bool> AddQuote(Quote quote);
         Task<bool> DeleteQuote(Quote quote);
         Task<Quote> GetQuote(Guid id);
+        Task<Quote> GetQuoteByDoctor(Guid id, DateTime date);
         Task<List<Quote>> GetQuotes();
         Task<bool> UpdateQuote(Quote quote);
     }

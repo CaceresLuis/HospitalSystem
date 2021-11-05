@@ -21,10 +21,22 @@ namespace Infrastructure.Repositories
         {
             return await _dataContext.Quotes.FindAsync(id);
         }
+        
+        public async Task<Quote> GetQuoteByDoctor(Guid id, DateTime date)
+        {
+            return await _dataContext.Quotes
+                .Include(q => q.Doctor)
+                .FirstOrDefaultAsync(q => q.Doctor.Id == id && q.DateTime == date);
+        }
 
         public async Task<List<Quote>> GetQuotes()
         {
-            return await _dataContext.Quotes.ToListAsync();
+            return await _dataContext.Quotes
+                .Include(q => q.Doctor)
+                .Include(q => q.MedicalHistory)
+                .ThenInclude(m => m.Patient)
+                .Include(q => q.Nurse)
+                .ToListAsync();
         }
 
         public async Task<bool> AddQuote(Quote quote)

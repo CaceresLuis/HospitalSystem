@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure.Data.Migratios
+namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -145,11 +145,23 @@ namespace Infrastructure.Data.Migratios
                     b.Property<Guid?>("DoctorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Hour")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<Guid?>("MedicalHistoryExpedient")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("NurseId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("QuoteTotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quotehour")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

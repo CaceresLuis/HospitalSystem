@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table class="table table-hover table-responsive table-striped" id="MyTable">
     <thead>
         <tr>
             <th>
@@ -22,41 +22,48 @@
                 Document
             </th>
             <th>
-                Adresss
-            </th>
-            <th>
                 Phone
             </th>
-            <th></th>
+            <th width="35%"></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Expedient)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.Document)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.Adresss)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Patient.Phone)
-            </td>
-            <td>
-                @{ Guid Id = item.Expedient; }
-                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Patient.Id">Edit</a> |
-                <a class="btn btn-info" asp-action="Details" asp-route-id="@Id">Details</a> |
-                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Patient.Id">Delete</a>
-            </td>
-        </tr>
- }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Expedient)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Document)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Phone)
+                </td>
+                <td>
+                    @{ Guid Id = item.Expedient; }
+                    <a class="btn btn-primary" asp-controller="Quotes" asp-action="Create" asp-route-id="@Id">Quote</a> |
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Patient.Id">Edit</a> |
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@Id">Details</a> |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Patient.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <partial name="_Alert" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#MyTable').DataTable();
+        });
+    </script>
+}
