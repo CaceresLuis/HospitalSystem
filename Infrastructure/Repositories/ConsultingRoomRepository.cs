@@ -31,7 +31,8 @@ namespace Infrastructure.Repositories
 
         public async Task<ConsultoringRoom> GetConsultoringRoomByName(string name)
         {
-            return await _dataContext.ConsultoringRooms.Where(c => c.Name == name).FirstOrDefaultAsync();
+            var data = await _dataContext.ConsultoringRooms.Where(c => c.Name == name).FirstOrDefaultAsync();
+            return data;
         }
 
         public async Task<List<ConsultoringRoom>> GetConsultoringRooms()

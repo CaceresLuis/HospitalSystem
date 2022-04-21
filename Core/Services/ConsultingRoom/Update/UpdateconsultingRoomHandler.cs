@@ -25,19 +25,22 @@ namespace Core.Services.ConsultingRoom.Update
                 throw new ExceptionHandler(HttpStatusCode.NotFound,
                     new Error
                     {
-                        Message = "The nurse does not exist",
+                        Message = "The Consultoring room does not exist",
                         Title = "Error",
                         State = State.error,
                     });
 
-            _ = await _consultingRoomRepository.GetConsultoringRoomByName(data.Name) ??
-                throw new ExceptionHandler(HttpStatusCode.BadRequest,
-                    new Error
-                    {
-                        Message = "The Consulting room al ready exist",
-                        Title = "Error",
-                        State = State.error,
-                    });
+            if (consultoringRoom.Name != data.Name)
+                if( await _consultingRoomRepository.GetConsultoringRoomByName(data.Name) != null)
+                    throw new ExceptionHandler(HttpStatusCode.BadRequest,
+                        new Error
+                        {
+                            Message = "The Consulting room al ready exist",
+                            Title = "Error",
+                            State = State.error,
+                        });
+
+            
 
             consultoringRoom.Name = data.Name ?? consultoringRoom.Name;
             consultoringRoom.IsAvailable = data.IsAvailable;

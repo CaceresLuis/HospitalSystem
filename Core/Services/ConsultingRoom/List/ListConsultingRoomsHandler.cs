@@ -3,8 +3,8 @@ using Core.Dtos;
 using AutoMapper;
 using System.Threading;
 using System.Threading.Tasks;
+using Infrastructure.Interfaces;
 using System.Collections.Generic;
-using Infrastructure.Repositories;
 using Infrastructure.Data.Entities;
 
 namespace Core.Services.ConsultingRoom.List
@@ -12,9 +12,9 @@ namespace Core.Services.ConsultingRoom.List
     public class ListConsultingRoomsHandler : IRequestHandler<ListConsultingRoomsQuery, List<ConsultingRoomDto>>
     {
         private readonly IMapper _mapper;
-        private readonly ConsultingRoomRepository _consultingRoomRepository;
+        private readonly IConsultingRoomRepository _consultingRoomRepository;
 
-        public ListConsultingRoomsHandler(IMapper mapper, ConsultingRoomRepository consultingRoomRepository)
+        public ListConsultingRoomsHandler(IMapper mapper, IConsultingRoomRepository consultingRoomRepository)
         {
             _mapper = mapper;
             _consultingRoomRepository = consultingRoomRepository;
