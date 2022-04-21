@@ -23,11 +23,11 @@ namespace Core.Services.Quotes.List
         public async Task<List<QuoteDto>> Handle(ListQuoteQuery request, CancellationToken cancellationToken)
         {
             List<Quote> quotes = await _quoteRepository.GetQuotes();
-            foreach (var item in quotes)
-            {
-                if (item.Quotehour >= 5 || item.QuoteTotal >= 40)
-                    quotes.Remove(item);
-            }
+            //foreach (var item in quotes)
+            //{
+            //    if (item.Reservation.QuoteByhour >= 5 || item.Reservation.QuoteTotal >= 40)
+            //        quotes.Remove(item);
+            //}
 
             List<QuoteDto> dtos = _mapper.Map<List<QuoteDto>>(quotes);
 

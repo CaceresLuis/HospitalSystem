@@ -66,9 +66,6 @@ namespace Core.Validations
     {
         public QuoteValidation()
         {
-            RuleFor(p => p.Doctor)
-                .NotNull()
-                .WithMessage("The doctor is requiered");
             RuleFor(p => p.Nurse)
                 .NotEmpty()
                 .WithMessage("The nurse is requiered");

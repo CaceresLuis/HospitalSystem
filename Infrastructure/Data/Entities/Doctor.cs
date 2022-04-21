@@ -16,7 +16,7 @@ namespace Infrastructure.Data.Entities
         public string Adresss { get; set; }
         [MaxLength(10)]
         public string Phone { get; set; }
-        public ICollection<Quote> Quotes { get; set; }
+        public ICollection<Reservation> Reservations { get; set; }
         public ICollection<MedicalHistory> MedicalHistories { get; set; }
     }
 }

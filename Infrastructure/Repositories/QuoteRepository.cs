@@ -25,14 +25,18 @@ namespace Infrastructure.Repositories
         public async Task<Quote> GetQuoteByDoctor(Guid id, DateTime date)
         {
             return await _dataContext.Quotes
-                .Include(q => q.Doctor)
-                .FirstOrDefaultAsync(q => q.Doctor.Id == id && q.DateTime == date);
+                .Include(q => q.Reservation)
+                .ThenInclude(r => r.Doctor)
+                .Include(q => q.Reservation)
+                .ThenInclude(q => q.Schedule)
+                .FirstOrDefaultAsync(q => q.Reservation.Doctor.Id == id && q.Reservation.Schedule.Date == date);
         }
 
         public async Task<List<Quote>> GetQuotes()
         {
             return await _dataContext.Quotes
-                .Include(q => q.Doctor)
+                .Include(q => q.Reservation)
+                .ThenInclude(r => r.Doctor)
                 .Include(q => q.MedicalHistory)
                 .ThenInclude(m => m.Patient)
                 .Include(q => q.Nurse)

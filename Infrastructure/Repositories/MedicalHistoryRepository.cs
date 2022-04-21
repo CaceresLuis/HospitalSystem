@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Infrastructure.Data;
 using System.Threading.Tasks;
 using Infrastructure.Interfaces;
@@ -24,6 +25,50 @@ namespace Infrastructure.Repositories
                 .Include(h => h.Doctor)
                 .Include(h => h.Quotes)
                 .FirstOrDefaultAsync(h => h.Expedient == id);
+        }
+
+        public async Task<MedicalHistory> SearchPatientByExpedient(Guid expedient)
+        {
+            return await _dataContext.MedicalHistories
+                .Include(h => h.Patient)
+                .Include(h => h.Quotes)
+                .ThenInclude(q => q.Reservation)
+                .ThenInclude(r => r.Schedule)
+                .Include(h => h.Quotes)
+                .ThenInclude(q => q.Reservation)
+                .ThenInclude(r => r.Doctor)
+                .Where(p => p.Expedient == expedient)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<MedicalHistory> SearchPatientByDocument(string document)
+        {
+            return await _dataContext.MedicalHistories
+                .Include(h => h.Patient)
+                .Include(h => h.Quotes)
+                .ThenInclude(q => q.Reservation)
+                .ThenInclude(r => r.Schedule)
+                .Include(h => h.Quotes)
+                .ThenInclude(q => q.Reservation)
+                .ThenInclude(r => r.Doctor)
+                .Where(h => h.Patient.Document == document)
+                .FirstOrDefaultAsync();
+        }
+
+
+        public async Task<List<MedicalHistory>> SearchPatientByName(string name)
+        {
+            return await _dataContext.MedicalHistories
+                .Include(h => h.Patient)
+                .Where(h => h.Patient.FullName.Contains(name))
+                .ToListAsync();
+        }
+
+        public async Task<MedicalHistory> GetSimpleMedicalHistory(Guid id)
+        {
+            return await _dataContext.MedicalHistories
+                .Include(h => h.Patient)
+                .FirstOrDefaultAsync(h => h.Patient.Id == id);
         }
 
         public async Task<List<MedicalHistory>> GetMedicalHistories()

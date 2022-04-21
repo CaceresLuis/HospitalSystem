@@ -37,7 +37,7 @@ namespace Core.Services.Quotes.Create
                        State = State.error,
                    });
 
-            Doctor doctor = await _doctorRepository.GetDoctor(data.DoctorId) ??
+            _ = await _doctorRepository.GetDoctor(data.DoctorId) ??
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
                    new Error
                    {
@@ -54,13 +54,16 @@ namespace Core.Services.Quotes.Create
                        Title = "Error",
                        State = State.error,
                    });
+            Quote quoteBd = await _quoteRepository.GetQuoteByDoctor(data.DoctorId, data.DateTime);
 
-            Quote quote = new() 
+            Quote quote = new()
             {
-                Doctor = doctor, Nurse = nurse, DateTime = data.DateTime,
-                MedicalHistory = medicalHistory, Hour = data.Hour,
-                QuoteTotal = 1, Quotehour = 1
+                Nurse = nurse,
+                MedicalHistory = medicalHistory,
+                Reservation = quoteBd.Reservation
             };
+
+            
             return await _quoteRepository.AddQuote(quote) ? true
                 :
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,

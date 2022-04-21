@@ -12,10 +12,12 @@ namespace Core.Services.Patients.Delete
     public class DeletePatientHandler : IRequestHandler<DeletePatientCommand, bool>
     {
         private readonly IPatientsRepository _patientsRepository;
+        private readonly IMedicalHistoryRepository _medicalHistoryRepository;
 
-        public DeletePatientHandler(IPatientsRepository patientsRepository)
+        public DeletePatientHandler(IPatientsRepository patientsRepository, IMedicalHistoryRepository medicalHistoryRepository)
         {
             _patientsRepository = patientsRepository;
+            _medicalHistoryRepository = medicalHistoryRepository;
         }
 
         public async Task<bool> Handle(DeletePatientCommand request, CancellationToken cancellationToken)
@@ -29,7 +31,11 @@ namespace Core.Services.Patients.Delete
                         State = State.error,
                     });
 
-            return await _patientsRepository.DeletePatient(patient);
+            MedicalHistory history = await _medicalHistoryRepository.GetSimpleMedicalHistory(patient.Id);
+            await _medicalHistoryRepository.DeleteMedicalHistory(history);
+            await _patientsRepository.DeletePatient(patient);
+
+            return true;
         }
     }
 }

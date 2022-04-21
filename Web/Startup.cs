@@ -45,8 +45,11 @@ namespace Web
             services.AddScoped<INurseRepository, NurseRepository>();
             services.AddScoped<IQuoteRepository, QuoteRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<IScheduleRepository, ScheduleRepository>();
             services.AddScoped<IPatientsRepository, PatientsRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
+            services.AddScoped<IConsultingRoomRepository, ConsultingRoomRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

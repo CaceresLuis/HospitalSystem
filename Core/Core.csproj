@@ -11,6 +11,12 @@
     <Folder Include="Services\MedicalHitories\Update\" />
     <Folder Include="Services\Quotes\Delete\" />
     <Folder Include="Services\Quotes\Update\" />
+    <Folder Include="Services\Reservations\Delete\" />
+    <Folder Include="Services\Reservations\List\" />
+    <Folder Include="Services\Reservations\Update\" />
+    <Folder Include="Services\Reservations\Read\" />
+    <Folder Include="Services\Schedules\Update\" />
+    <Folder Include="Services\Schedules\Read\" />
   </ItemGroup>
 
   <ItemGroup>

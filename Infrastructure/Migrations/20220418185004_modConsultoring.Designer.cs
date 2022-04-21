@@ -7,19 +7,36 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Infrastructure.Data.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211104183444_QuoteModify")]
-    partial class QuoteModify
+    [Migration("20220418185004_modConsultoring")]
+    partial class modConsultoring
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.11")
+                .HasAnnotation("ProductVersion", "5.0.12")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.ConsultoringRoom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ConsultoringRooms");
+                });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.Doctor", b =>
                 {
@@ -46,6 +63,39 @@ namespace Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Doctors");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.DoctorConsultoringRoom", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ConsultoringRoomId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("DoctorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuoteTotal")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Schedule")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConsultoringRoomId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("DoctorConsultoringRooms");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.MedicalHistory", b =>
@@ -141,11 +191,62 @@ namespace Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid?>("MedicalHistoryExpedient")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("NurseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MedicalHistoryExpedient");
+
+                    b.HasIndex("NurseId");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("Quotes");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.Reservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ConsultingRoom")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("DoctorId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("QuoteTotal")
+                        .HasMaxLength(40)
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("ScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("Reservations");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.Schedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Hour")
                         .HasColumnType("nvarchar(max)");
@@ -153,27 +254,24 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("MedicalHistoryExpedient")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("NurseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("QuoteTotal")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quotehour")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("DoctorId");
+                    b.ToTable("Schedules");
+                });
 
-                    b.HasIndex("MedicalHistoryExpedient");
+            modelBuilder.Entity("Infrastructure.Data.Entities.DoctorConsultoringRoom", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Entities.ConsultoringRoom", "ConsultoringRoom")
+                        .WithMany()
+                        .HasForeignKey("ConsultoringRoomId");
 
-                    b.HasIndex("NurseId");
+                    b.HasOne("Infrastructure.Data.Entities.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId");
 
-                    b.ToTable("Quotes");
+                    b.Navigation("ConsultoringRoom");
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.MedicalHistory", b =>
@@ -193,10 +291,6 @@ namespace Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Infrastructure.Data.Entities.Quote", b =>
                 {
-                    b.HasOne("Infrastructure.Data.Entities.Doctor", "Doctor")
-                        .WithMany("Quotes")
-                        .HasForeignKey("DoctorId");
-
                     b.HasOne("Infrastructure.Data.Entities.MedicalHistory", "MedicalHistory")
                         .WithMany("Quotes")
                         .HasForeignKey("MedicalHistoryExpedient");
@@ -205,18 +299,37 @@ namespace Infrastructure.Data.Migrations
                         .WithMany("Quotes")
                         .HasForeignKey("NurseId");
 
-                    b.Navigation("Doctor");
+                    b.HasOne("Infrastructure.Data.Entities.Reservation", "Reservation")
+                        .WithMany("Quotes")
+                        .HasForeignKey("ReservationId");
 
                     b.Navigation("MedicalHistory");
 
                     b.Navigation("Nurse");
+
+                    b.Navigation("Reservation");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.Reservation", b =>
+                {
+                    b.HasOne("Infrastructure.Data.Entities.Doctor", "Doctor")
+                        .WithMany("Reservations")
+                        .HasForeignKey("DoctorId");
+
+                    b.HasOne("Infrastructure.Data.Entities.Schedule", "Schedule")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ScheduleId");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.Doctor", b =>
                 {
                     b.Navigation("MedicalHistories");
 
-                    b.Navigation("Quotes");
+                    b.Navigation("Reservations");
                 });
 
             modelBuilder.Entity("Infrastructure.Data.Entities.MedicalHistory", b =>
@@ -227,6 +340,16 @@ namespace Infrastructure.Data.Migrations
             modelBuilder.Entity("Infrastructure.Data.Entities.Nurse", b =>
                 {
                     b.Navigation("Quotes");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.Reservation", b =>
+                {
+                    b.Navigation("Quotes");
+                });
+
+            modelBuilder.Entity("Infrastructure.Data.Entities.Schedule", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

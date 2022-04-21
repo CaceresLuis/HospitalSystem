@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Data.Migrations
 {
-    public partial class QuoteModify : Migration
+    public partial class Schedules : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,6 +53,20 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Schedules",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Hour = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Schedules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "MedicalHistories",
                 columns: table => new
                 {
@@ -82,28 +96,44 @@ namespace Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ScheduleId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    QuoteTotal = table.Column<int>(type: "int", nullable: false),
+                    QuoteByhour = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Quotes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NurseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Hour = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DoctorId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    QuoteTotal = table.Column<int>(type: "int", nullable: false),
-                    Quotehour = table.Column<int>(type: "int", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MedicalHistoryExpedient = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Quotes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Quotes_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Quotes_MedicalHistories_MedicalHistoryExpedient",
                         column: x => x.MedicalHistoryExpedient,
@@ -114,6 +144,12 @@ namespace Infrastructure.Data.Migrations
                         name: "FK_Quotes_Nurses_NurseId",
                         column: x => x.NurseId,
                         principalTable: "Nurses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Quotes_Reservations_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -129,11 +165,6 @@ namespace Infrastructure.Data.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Quotes_DoctorId",
-                table: "Quotes",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Quotes_MedicalHistoryExpedient",
                 table: "Quotes",
                 column: "MedicalHistoryExpedient");
@@ -142,6 +173,21 @@ namespace Infrastructure.Data.Migrations
                 name: "IX_Quotes_NurseId",
                 table: "Quotes",
                 column: "NurseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Quotes_ReservationId",
+                table: "Quotes",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_DoctorId",
+                table: "Reservations",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_ScheduleId",
+                table: "Reservations",
+                column: "ScheduleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -156,10 +202,16 @@ namespace Infrastructure.Data.Migrations
                 name: "Nurses");
 
             migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Doctors");
+
+            migrationBuilder.DropTable(
+                name: "Schedules");
         }
     }
 }

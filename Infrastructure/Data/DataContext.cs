@@ -14,5 +14,11 @@ namespace Infrastructure.Data
         public DbSet<Doctor> Doctors { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalHistory> MedicalHistories { get; set; }
+        public DbSet<ConsultoringRoom> ConsultoringRooms { get; set; }
+        public DbSet<DoctorConsultoringRoom> DoctorConsultoringRooms { get; set; }
+
+
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
     }
 }

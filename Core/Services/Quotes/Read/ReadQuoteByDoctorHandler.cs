@@ -11,21 +11,21 @@ using Infrastructure.Data.Entities;
 
 namespace Core.Services.Quotes.Read
 {
-    public class ReadQuoteByDoctorHandler : IRequestHandler<ReadQuoteByDoctorQuery, QuoteDto>
+    public class ReadQuoteByDoctorHandler : IRequestHandler<ReadQuoteByDoctorQuery, ReservationDto>
     {
         private readonly IMapper _mapper;
-        private readonly IQuoteRepository _quoteRepository;
+        private readonly IReservationRepository _reservationRepository;
 
-        public ReadQuoteByDoctorHandler(IMapper mapper, IQuoteRepository quoteRepository)
+        public ReadQuoteByDoctorHandler(IMapper mapper, IReservationRepository reservationRepository)
         {
             _mapper = mapper;
-            _quoteRepository = quoteRepository;
+            _reservationRepository = reservationRepository;
         }
 
-        public async Task<QuoteDto> Handle(ReadQuoteByDoctorQuery request, CancellationToken cancellationToken)
+        public async Task<ReservationDto> Handle(ReadQuoteByDoctorQuery request, CancellationToken cancellationToken)
         {
-            Quote quote = await _quoteRepository.GetQuoteByDoctor(request.DoctorId, request.Date);
-            if(quote.QuoteTotal >= 40)
+            Reservation reservation = await _reservationRepository.GetReservationsByDoctor(request.DoctorId, request.Date);
+            if(reservation.QuoteTotal >= 40)
                 throw new ExceptionHandler(HttpStatusCode.BadRequest,
                    new Error
                    {
@@ -34,17 +34,17 @@ namespace Core.Services.Quotes.Read
                        State = State.error,
                    });
 
-            if(request.Hour == quote.Hour)
-                if(quote.Quotehour > 5)
-                    throw new ExceptionHandler(HttpStatusCode.BadRequest,
-                   new Error
-                   {
-                       Message = "Something has gone wrong",
-                       Title = "Error",
-                       State = State.error,
-                   });
+            //if(request.Hour == reservation.Hour)
+            //    if(reservation.QuoteByhour > 5)
+            //        throw new ExceptionHandler(HttpStatusCode.BadRequest,
+            //       new Error
+            //       {
+            //           Message = "Something has gone wrong",
+            //           Title = "Error",
+            //           State = State.error,
+            //       });
 
-            return _mapper.Map<QuoteDto>(quote);
+            return _mapper.Map<ReservationDto>(reservation);
         }
     }
 }

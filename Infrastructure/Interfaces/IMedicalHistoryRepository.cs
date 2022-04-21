@@ -12,5 +12,9 @@ namespace Infrastructure.Interfaces
         Task<bool> AddMedicalHistory(MedicalHistory medicalHistory);
         Task<bool> DeleteMedicalHistory(MedicalHistory medicalHistory);
         Task<bool> UpdateMedicalHistory(MedicalHistory medicalHistory);
+        Task<MedicalHistory> GetSimpleMedicalHistory(Guid id);
+        Task<MedicalHistory> SearchPatientByExpedient(Guid expedient);
+        Task<MedicalHistory> SearchPatientByDocument(string document);
+        Task<List<MedicalHistory>> SearchPatientByName(string name);
     }
 }

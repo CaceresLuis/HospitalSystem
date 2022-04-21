@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
                 .Where(p => p.FullName == name)
                 .FirstOrDefaultAsync();
         }
-        
+
         public async Task<List<Patient>> GetPatients()
         {
             return await _dataContext.Patients.ToListAsync();
