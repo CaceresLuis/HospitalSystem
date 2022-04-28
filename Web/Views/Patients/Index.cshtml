@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Core.Dtos.MedicalHistoryDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                Expedient
+            </th>
+            <th>
+                Full Name
+            </th>
+            <th>
+                Document
+            </th>
+            <th>
+                Phone
+            </th>
+            <th width="35%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Expedient)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Document)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Patient.Phone)
+                </td>
+                <td>
+                    @{ Guid Id = item.Expedient; }
+                    <a class="btn btn-primary" asp-controller="Quotes" asp-action="Create" asp-route-id="@Id">Quote</a> |
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Patient.Id">Edit</a> |
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@Id">Details</a> |
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Patient.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<partial name="_Alert" />
+
+

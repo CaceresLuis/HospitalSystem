@@ -1,0 +1,51 @@
+﻿@model Core.Dtos.MedicalHistoryDto
+
+@{
+    ViewData["Title"] = "Details";
+    var Id = @Model.Expedient;
+}
+
+<h1>Details</h1>
+
+    <h4>Patient</h4>
+    <hr />
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <dl>
+            <dt class="col-sm-2">
+               Expedient
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Expedient)
+            </dd><dt class="col-sm-2">
+                Full Name
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Patient.FullName)
+            </dd>
+            <dt class="col-sm-2">
+                Document
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Patient.Document)
+            </dd>
+            <dt class="col-sm-2">
+                Adresss
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Patient.Adresss)
+            </dd>
+            <dt class="col-sm-2">
+                Phone
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Patient.Phone)
+            </dd>
+        </dl>
+        <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Id">Edit</a>
+    </div>
+</div>
+<div>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+</div>
